@@ -3,6 +3,7 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
+const userRoutes = require("./routes/user");
 
 //Express
 

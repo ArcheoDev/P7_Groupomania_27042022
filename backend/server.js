@@ -1,9 +1,11 @@
 //Importation
 
 require("dotenv").config();
-
+const userRoutes = require("./routes/user");
+// const bodyParser = require("body-parser");
 const http = require('http');
 const app = require('./app');
+const express = require("express")
 
 //Fonction normalizePort
 
@@ -21,9 +23,8 @@ const normalizePort = val => {
 
   //Recherche des erreurs
 
-  const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set("port", port);
-
 
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
@@ -54,4 +55,8 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
+//Routes
+app.use("/api/user", userRoutes);
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended:true}));
 server.listen(port);
