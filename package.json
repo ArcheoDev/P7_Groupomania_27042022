@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^4.18.0",
+    "node": "^17.7.2"
+  },
+  "name": "helenelabit_7_27042022",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcheoDev/P7_Groupomania_27042022.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArcheoDev/P7_Groupomania_27042022/issues"
+  },
+  "homepage": "https://github.com/ArcheoDev/P7_Groupomania_27042022#readme",
+  "description": ""
+}
