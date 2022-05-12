@@ -1,5 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const dbc = require("../config/database");
 
 module.exports = (req, res, next) => {
   try {

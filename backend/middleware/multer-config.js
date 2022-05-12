@@ -1,9 +1,8 @@
 // Importation
-
 const multer = require("multer");
+const path = require("path");
 
 // Fichiers MIME_TYPES
-
 const MIME_TYPES = {
   "image/jpg": "jpg",
   "image/jpeg": "jpg",
@@ -11,7 +10,6 @@ const MIME_TYPES = {
 };
 
 // Configuration du multer
-
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, "images");
