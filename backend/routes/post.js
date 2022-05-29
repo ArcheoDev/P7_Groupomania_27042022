@@ -1,23 +1,28 @@
 // Importation
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const postCtrl = require("../controllers/post");
-const auth = require("../middleware/auth");
-const upload = require("../middleware/multer-config");
 
-// Post CRUD
-router.get("/", auth, postCtrl.getAllPosts);
-router.get("/:id", auth, postCtrl.getOnePost);
-router.post("/", auth, upload.single("post_image"), postCtrl.createPost);
-router.delete("/:id", auth, postCtrl.deleteOnePost);
-router.put("/:id", auth, postCtrl.updatePost);
+const postController = require('../controllers/post');
+const commentController = require('../controllers/comment');
 
-// Images
-router.get("/image/:id", auth, postCtrl.getOneImage);
+const auth = require('../middleware/auth');
+const multer = require('../middleware/multer-config');
 
-// Like / Unlike
-router.patch("/:id/likeunlike", auth, postCtrl.likeUnlikePost);
-router.post("/:id/postLikedByUser", auth, postCtrl.postLikedByUser);
-router.post("/:id/likeunlike", auth, postCtrl.countLikes);
+// Routes pour les posts
+router.post('/', auth, multer, postController.createPost);
+router.get('/', auth, postController.getAllPosts);
+router.get('/:id', auth, postController.getOnePost);
+router.put('/:id', auth, multer, postController.modifyPost);
+router.delete('/:id', auth, postController.deletePost);
+router.delete('/admin/:id', auth, postController.deletePostByAdmin);
+
+// Routes pour les commentaires
+
+router.post('/:postId/comments', auth, commentController.createComment);
+router.get('/:postId/comments', auth, commentController.getAllComments);
+router.get('/:postId/comments/:id', auth, commentController.getOneComment);
+router.put('/:postId/comments/:id', auth, commentController.modifyComment);
+router.delete('/:postId/comments/:id', auth, commentController.deleteComment);
+router.delete('/admin/:postId/comments/:id', auth, commentController.deleteCommentByAdmin);
 
 module.exports = router;

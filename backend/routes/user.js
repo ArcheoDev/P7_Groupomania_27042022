@@ -1,16 +1,20 @@
 // Importation
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const userCtrl = require("../controllers/auth");
-const userCtrl = require("../controllers/user");
-const password = require("../middleware/password");
-const auth = require("../middleware/auth");
-const upload = require("../middleware/multer-config");
+const userController = require('../controllers/user');
 
-// Post CRUD
-router.get("/:id", auth, userCtrl.getOneUser);
-router.get("/image/:id", auth, userCtrl.getProfilPicture);
-router.put("/:id", auth, upload.single("profil_image"), userCtrl.updateOneUser);
+const auth = require('../middleware/auth');
 
-module.exports = router ;
+// Routes pour les utilisateurs
+router.post('/signup', userController.signup);
+router.post('/login', userController.login);
+router.get('/user/:id', auth, userController.getOneUser);
+router.put('/user/:id', auth, userController.modifyUser);
+router.delete('/user/:id', auth, userController.deleteUser);
+
+// Routes pour les admins
+router.get('/admin/users/:id', auth, userController.getAllUsersByAdmin);
+router.put('/admin/users/:id', auth, userController.modifyUserRole);
+
+module.exports = router;
