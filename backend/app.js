@@ -11,6 +11,7 @@ const postRoutes = require('./routes/post');
 //Express & Helmet
 
 const app = express();
+
 app.use(helmet());
 
 //Correction erreur CORS
@@ -25,12 +26,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-// Routes files
-const userRoutes = require("./routes/user");
-const postRoutes = require("./routes/post");
-const authRoutes = require("./routes/auth");
-const commentaireRoutes = require("./routes/commentaire");
 
 // Routes
 app.use('/api/auth', userRoutes);
