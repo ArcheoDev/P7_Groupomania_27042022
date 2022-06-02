@@ -1,28 +1,21 @@
-//Importation
-
 const http = require('http');
 const app = require('./app');
 
-//Fonction normalizePort
-
 const normalizePort = val => {
-  const port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-      return val;
-  }
-  if (port >= 0) {
-      return port;
-  }
-  return false;
+    if (isNaN(port)) {
+        return val;
+    }
+    if (port >= 0) {
+        return port;
+    }
+    return false;
 };
+const port = normalizePort(process.env.PORT || '4000');
+app.set('port', port);
 
-  //Recherche des erreurs
-
-  const port = normalizePort(process.env.PORT || '4000');
-  app.set('port', port);
-
-  const errorHandler = error => {
+const errorHandler = error => {
     if (error.syscall !== 'listen') {
         throw error;
     }

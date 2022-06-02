@@ -1,4 +1,3 @@
-// Importation
 const express = require('express');
 const router = express.Router();
 
@@ -17,7 +16,6 @@ router.delete('/:id', auth, postController.deletePost);
 router.delete('/admin/:id', auth, postController.deletePostByAdmin);
 
 // Routes pour les commentaires
-
 router.post('/:postId/comments', auth, commentController.createComment);
 router.get('/:postId/comments', auth, commentController.getAllComments);
 router.get('/:postId/comments/:id', auth, commentController.getOneComment);
