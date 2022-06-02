@@ -1,4 +1,4 @@
-// Les imports importants
+
 import React, { useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
