@@ -10,7 +10,7 @@ import { POST_API } from '../config';
 const ArticlePage = () => {
 
     const [post, setPost] = useState();
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
     const [isLoadedCom, setIsLoadedCom] = useState(false);
     const [content, setContent] = useState();
@@ -87,7 +87,7 @@ const ArticlePage = () => {
                 <hr className="my-4" />
                 </div>
                 <div>
-                { comments !== null && !!userId ? 
+                { comments !== null && comments !== undefined && !!userId ? 
                 <CommentairesPages comments={comments} isLoadedCom={isLoadedCom} userId={userId}/> : 
                 null }
                 </div>
@@ -99,7 +99,7 @@ const ArticlePage = () => {
                                   value={content}
                                   onChange={(e) => setContent(e.target.value)}/>
                 </div>
-                <button  type="submit" className="btn btn-success mt-5" onClick={ e => submitForm(e, post.id)}>Submit</button>
+                <button  type="submit" className="btn btn-outline-danger mt-5" onClick={ e => submitForm(e, post.id)}>Submit</button>
             </> );
             }
 }

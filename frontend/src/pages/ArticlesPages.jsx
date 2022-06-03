@@ -1,107 +1,104 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from "react-router-dom";
+import Moment from 'react-moment';
+import jwtDecode from "jwt-decode";
 import axios from "axios";
-import { useParams } from "react-router";
-import { useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode"; 
-import CommentairesPages from "../pages/CommentairesPages";
 import { toast } from "react-toastify";
 import { POST_API } from '../config';
+import Button from '@restart/ui/esm/Button';
+import img from "../images/img.jpg"
 
-const ArticlePage = () => {
-
-    const [post, setPost] = useState();
-    const [comments, setComments] = useState();
+const ArticlesPage = () => {
+    const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [isLoadedCom, setIsLoadedCom] = useState(false);
-    const [content, setContent] = useState();
-    const params = useParams();
+    const [articles, setArticles] = useState([]);
+    const navigate = useNavigate();
+
     const token = window.localStorage.getItem("authToken");
     const userInfo = jwtDecode(token);
     const userId= JSON.stringify(userInfo.userId);
-    const navigate = useNavigate();
+
+    const deletePost = async (e, id) => {
+    e.preventDefault(); 
+    const originalPost = [...articles];
+
+    setArticles(articles.filter(i => i.id !== id));
+
+    try {
+      axios({
+            method: 'delete',     //put
+            url: POST_API + "/" + id,
+            headers: {"Authorization": 'Bearer '+ token}, 
+            data: {
+                "userId": Number(userId)// This is the body part
+            }});
+      console.log(id);
+      toast.success("L'article a bien été supprimée");
+    } catch (error) {
+      toast.error("Une erreur est survenue");
+      setArticles(originalPost);
+    }
+  }
 
 
-     useEffect(() => {
-      axios.get("http://localhost:4000/api/posts/" + params.id,
+
+    useEffect(() => {
+      axios.get(POST_API, 
         axios.defaults.headers["Authorization"] = "Bearer " + token)
         .then(
             (result) => {
                 setIsLoaded(true);
-                setPost(result.data);
+                setArticles(result.data);
             },
             (error) => {
                 setIsLoaded(true);
-                setPost(error);
+                setError(error);
             }
         )
-    }, [params.id, token])
+    }, [token])
 
-    useEffect(() => {
-        const fetch = async () => {
-        await axios.get("http://localhost:4000/api/posts/" + params.id + "/comments",
-        axios.defaults.headers["Authorization"] = "Bearer " + token)
-        .then(
-            (result) => {
-                setIsLoadedCom(true);
-                setComments(result.data); 
-                },
-            (error) => {
-                setIsLoadedCom(true);
-                setComments(error);
-                }
-            )
-        }
-        fetch().catch(console.error);
-    }, [params.id, token])
 
-        const submitForm =  async (e, id) => {
-        e.preventDefault();
+    if (error) {
+        return <div>Erreur : {error.message}</div>;
+    } else if (!isLoaded) {
+        return <div>Chargement...</div>;
+    } else {
+        return (
+            <>   
+                <div className="container">
+                    <h1>Tous les articles publiés</h1>
+                    <div className="d-flex">
+                        <button className="btn btn-outline-danger btn-sm" onClick={() => {navigate("/createarticle/")}}>Publier un article</button>
+                    </div>
+                    {articles.map((article) => (
+                        <div className="card text-center mt-5 "key={article.id}>
+                            <div className="card-header">   
+                                <img className="img-thumbnail" src={article.imageUrl || img}  alt="Card "/> 
+                        </div>
 
-        try {
-            await  axios.post(POST_API + "/" + parseInt(id) + "/comments", {
-            "content": content,
-            "postId": parseInt(id),
-            "userId": parseInt(userId)
-        }, {
-            headers: {"Authorization": 'Bearer '+ token},
-        });
-            navigate('/articles');
-            toast.success("Le commentaire a bien été crée");
-            } catch (error) {
-            toast.error("Une erreur est survenue");
-            } 
-        }
-    
+                        <div >
 
-        if (!post) {
-            return( <> <h1>Pages 404</h1> </>)
-        } else if (!isLoaded) {
-            return <div>Chargement...</div>;
-        } else {
-            return ( <>
-                <div className="jumbotron">
-                    <h1 className="display-3">{post.content}</h1>
-                        <p className="lead">
-                        {post.User.name}
-                        </p>
-                <hr className="my-4" />
+                            <div className="card-body">
+                                 <Link to={"/article/" + article.id} className=" text-danger">{article.title}</Link>
+                                <p className="card-text">{article.content}</p>
+                                   {userId === `${article.User.id}` ? 
+                                   <Button className="btn btn-outline-danger"  variant="outlined" color="primary" onClick={ (e) => deletePost(e, article.id)}>
+                                        Delete
+                                    </Button> 
+                                    :  null}
+                            </div>
+                                <div className="card-footer text-muted">
+                                <p id="created-at"><Moment fromNow>{article.createdAt}</Moment></p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    ))}
+                    
                 </div>
-                <div>
-                { comments !== null && comments !== undefined && !!userId ? 
-                <CommentairesPages comments={comments} isLoadedCom={isLoadedCom} userId={userId}/> : 
-                null }
-                </div>
-                    <div className="input-group">
-                        <textarea className="form-control" 
-                                  placeholder="Le contenu de votre commentaire"
-                                  type="text"
-                                  name="content"
-                                  value={content}
-                                  onChange={(e) => setContent(e.target.value)}/>
-                </div>
-                <button  type="submit" className="btn btn-success mt-5" onClick={ e => submitForm(e, post.id)}>Submit</button>
-            </> );
-            }
-}
+            </>
+        );
+    } 
+};
  
-export default ArticlePage;
+export default ArticlesPage;
